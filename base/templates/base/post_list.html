@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %} {% endblock %}
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" />
+  </head>
+  <body>
+    {% if request.user.is_authenticated %}
+    <p>{{request.user}}</p>
+    <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+    <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+    <hr />
+    <h1>My post list</h1>
+    <a href="{% url 'post-create' %}">Add post</a>
+
+    <form method="GET">
+      <input type="text" name="search-area" value="{{search_input}}" />
+      <input type="submit" value="Search" />
+    </form>
+
+    <table>
+      <tr>
+        <th>Item</th>
+        <th></th>
+      </tr>
+      {% for post in posts %}
+      <tr>
+        <td>{{ post.title }}</td>
+        <td>
+          <form method="POST" action="{% url 'like' post.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}" />
+            <button
+              style="background-color: transparent; border: none; box-shadow: none"
+              type="submit"
+            >
+              <i class="far fa-thumbs-up"> <span>{{ post.likes.all.count }}</span></i>
+            </button>
+          </form>
+        </td>
+        <td>
+          <form method="POST" action="{% url 'dislike' post.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}" />
+            <button
+              style="background-color: transparent; border: none; box-shadow: none"
+              type="submit"
+            >
+              <i class="far fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i>
+            </button>
+          </form>
+        </td>
+        <td><a href="{% url 'post' post.id  %}">View</a></td>
+        <td><a href="{% url 'post-update' post.id  %}">Edit</a></td>
+        <td><a href="{% url 'post-delete' post.id  %}">Delete</a></td>
+      </tr>
+      {% empty %}
+      <h3>No posts :(</h3>
+      {% endfor %}
+    </table>
+  </body>
+</html>
