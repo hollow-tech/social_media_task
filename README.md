@@ -1,6 +1,9 @@
 # social_media_task
 social media website
 
+Это шаблон на для социальной сети с базовым функционалом CRUD. Все основных классов написаны API с помощью DJANGO REST FRAMEWORK.
+
+
 
 ## Installation
 
